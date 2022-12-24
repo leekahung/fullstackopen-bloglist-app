@@ -17,6 +17,7 @@ specifiers:
   react: ^18.2.0
   react-dom: ^18.2.0
   react-scripts: 5.0.1
+  serverless-http: ^3.1.0
   web-vitals: ^2.1.4
 
 dependencies:
@@ -36,6 +37,7 @@ dependencies:
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-scripts: 5.0.1_react@18.2.0
+  serverless-http: 3.1.0
   web-vitals: 2.1.4
 
 packages:
@@ -15137,6 +15139,11 @@ packages:
       send: 0.18.0
     transitivePeerDependencies:
       - supports-color
+    dev: false
+
+  /serverless-http/3.1.0:
+    resolution: {integrity: sha512-CwWO34otWjwJ3+meUlFoEhCOiEEpGDT/xnaZ835iMwF0PEL2GoMJMBRed6tUXYtrLAj4tTgkF6wiUbaJQyaEpw==}
+    engines: {node: '>=12.0'}
     dev: false
 
   /set-blocking/2.0.0:
