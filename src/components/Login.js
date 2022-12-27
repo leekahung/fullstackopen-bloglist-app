@@ -1,10 +1,4 @@
-const Login = ({
-  handleLogin,
-  username,
-  handleUsername,
-  password,
-  handlePassword,
-}) => {
+const Login = ({ handleLogin, loginValues, handleLoginValues }) => {
   const loginStyles = {
     margin: "10px 0",
   };
@@ -15,11 +9,20 @@ const Login = ({
         <div>
           <div>
             <label>username </label>
-            <input value={username} onChange={handleUsername} />
+            <input
+              name="username"
+              value={loginValues.username}
+              onChange={handleLoginValues}
+            />
           </div>
           <div>
             <label>password </label>
-            <input type="password" value={password} onChange={handlePassword} />
+            <input
+              type="password"
+              name="password"
+              value={loginValues.password}
+              onChange={handleLoginValues}
+            />
           </div>
           <button style={loginStyles}>login</button>
         </div>
