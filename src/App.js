@@ -18,6 +18,7 @@ function App() {
     author: "",
     url: "",
   });
+  const [notificationValues, setNotificationValues] = useState(null);
 
   useEffect(() => {
     if (user) {
@@ -36,7 +37,31 @@ function App() {
     }
   }, []);
 
-  console.log(blogs);
+  const notificationStyles = {
+    general: {
+      backgroundColor: "lightgrey",
+      padding: "10px",
+      borderRadius: "5px",
+    },
+    error: {
+      color: "red",
+      border: "2px solid red",
+    },
+    message: {
+      color: "green",
+      border: "2px solid green",
+    },
+  };
+
+  const notificationMessage = {
+    ...notificationStyles.general,
+    ...notificationStyles.message,
+  };
+
+  const notificationError = {
+    ...notificationStyles.general,
+    ...notificationStyles.error,
+  };
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -51,13 +76,17 @@ function App() {
         username: "",
         password: "",
       });
+      setNotificationValues(notificationMessage);
       setNotifications(`${user.name} logged in`);
       setTimeout(() => {
+        setNotificationValues(null);
         setNotifications(null);
       }, 5000);
     } catch (exception) {
-      setNotifications("Wrong username/password");
+      setNotificationValues(notificationError);
+      setNotifications("Wrong username or password");
       setTimeout(() => {
+        setNotificationValues(null);
         setNotifications(null);
       }, 5000);
     }
@@ -65,8 +94,10 @@ function App() {
 
   const handleLogout = () => {
     const name = JSON.parse(window.localStorage.loggedUser).name;
+    setNotificationValues(notificationMessage);
     setNotifications(`${name} logging out...`);
     setTimeout(() => {
+      setNotificationValues(null);
       setNotifications(null);
       window.location.reload();
     }, 2000);
@@ -91,17 +122,30 @@ function App() {
     event.preventDefault();
     const newBlog = blogValues;
 
-    const newBlogPost = await blogServices.create(newBlog);
-    setBlogs(blogs.concat(newBlogPost));
-    setNotifications(`a new blog ${newBlog.title} by ${newBlog.author} added`);
-    setBlogValues({
-      title: "",
-      author: "",
-      url: "",
-    });
-    setTimeout(() => {
-      setNotifications(null);
-    }, 5000);
+    try {
+      const newBlogPost = await blogServices.create(newBlog);
+      setBlogs(blogs.concat(newBlogPost));
+      setNotificationValues(notificationMessage);
+      setNotifications(
+        `a new blog ${newBlog.title} by ${newBlog.author} added`
+      );
+      setBlogValues({
+        title: "",
+        author: "",
+        url: "",
+      });
+      setTimeout(() => {
+        setNotificationValues(null);
+        setNotifications(null);
+      }, 5000);
+    } catch (exception) {
+      setNotificationValues(notificationError);
+      setNotifications("All fields must to be filled");
+      setTimeout(() => {
+        setNotificationValues(null);
+        setNotifications(null);
+      }, 5000); 
+    }
   };
 
   const logoutStyles = {
@@ -113,7 +157,7 @@ function App() {
       {user === null ? (
         <>
           <h1>log in to application</h1>
-          <div>{notifications}</div>
+          <div style={notificationValues}>{notifications}</div>
           <Login
             handleLogin={handleLogin}
             loginValues={loginValues}
@@ -123,7 +167,8 @@ function App() {
       ) : (
         <>
           <h1>blogs</h1>
-          <div>{notifications}</div>
+          <div style={notificationValues}>{notifications}</div>
+          <div>{`user: ${user.name}`}</div>
           <button style={logoutStyles} onClick={() => handleLogout()}>
             Logout
           </button>
