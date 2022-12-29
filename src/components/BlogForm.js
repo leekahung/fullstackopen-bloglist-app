@@ -1,8 +1,43 @@
-const BlogForm = ({ handleAddBlog, blogValues, handleBlogValues }) => {
+import { useState } from "react";
+
+const BlogForm = ({ handleAddBlog }) => {
+  const [blogValues, setBlogValues] = useState({
+    title: "",
+    author: "",
+    url: "",
+  });
+
+  const handleBlogValues = (event) => {
+    setBlogValues({
+      ...blogValues,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const submitBlog = async (event) => {
+    event.preventDefault();
+    const newBlog = {
+      title: blogValues.title,
+      author: blogValues.author,
+      url: blogValues.url,
+    };
+
+    handleAddBlog(newBlog);
+    setBlogValues({
+      title: "",
+      author: "",
+      url: "",
+    });
+  };
+
+  const cancelButtonStyles = {
+    margin: "10px 0",
+  };
+
   return (
     <div>
       <h1>create new</h1>
-      <form onSubmit={handleAddBlog}>
+      <form onSubmit={submitBlog}>
         <div>
           <label>title: </label>
           <input
@@ -27,7 +62,7 @@ const BlogForm = ({ handleAddBlog, blogValues, handleBlogValues }) => {
             onChange={handleBlogValues}
           />
         </div>
-        <button>create</button>
+        <button style={cancelButtonStyles}>create</button>
       </form>
     </div>
   );

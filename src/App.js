@@ -1,29 +1,26 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import loginService from "./services/login";
 import blogServices from "./services/blogs";
 import Login from "./components/Login";
 import Blogs from "./components/Blogs";
 import BlogForm from "./components/BlogForm";
+import Toggable from "./components/Toggable";
 
 function App() {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
-  const [loginValues, setLoginValues] = useState({
-    username: "",
-    password: "",
-  });
   const [notifications, setNotifications] = useState("");
-  const [blogValues, setBlogValues] = useState({
-    title: "",
-    author: "",
-    url: "",
-  });
   const [notificationValues, setNotificationValues] = useState(null);
+  const blogFormRef = useRef();
+
+  const sortBlogsByLikes = (blog1, blog2) => {
+    return blog2.likes - blog1.likes;
+  };
 
   useEffect(() => {
     if (user) {
       blogServices.getAll().then((returnedBlogs) => {
-        setBlogs(returnedBlogs);
+        setBlogs(returnedBlogs.sort((a, b) => sortBlogsByLikes(a, b)));
       });
     }
   }, [user]);
@@ -42,6 +39,7 @@ function App() {
       backgroundColor: "lightgrey",
       padding: "10px",
       borderRadius: "5px",
+      margin: "10px 0",
     },
     error: {
       color: "red",
@@ -63,19 +61,13 @@ function App() {
     ...notificationStyles.error,
   };
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
-
+  const handleLogin = async (loginCredentials) => {
     try {
-      const user = await loginService.login(loginValues);
+      const user = await loginService.login(loginCredentials);
       window.localStorage.setItem("loggedUser", JSON.stringify(user));
 
       blogServices.setToken(user.token);
       setUser(user);
-      setLoginValues({
-        username: "",
-        password: "",
-      });
       setNotificationValues(notificationMessage);
       setNotifications(`${user.name} logged in`);
       setTimeout(() => {
@@ -104,36 +96,16 @@ function App() {
     window.localStorage.removeItem("loggedUser");
   };
 
-  const handleLoginValues = (event) => {
-    setLoginValues({
-      ...loginValues,
-      [event.target.name]: event.target.value,
-    });
-  };
-
-  const handleBlogValues = (event) => {
-    setBlogValues({
-      ...blogValues,
-      [event.target.name]: event.target.value,
-    });
-  };
-
-  const handleAddBlog = async (event) => {
-    event.preventDefault();
-    const newBlog = blogValues;
+  const handleAddBlog = async (blogObject) => {
+    blogFormRef.current.toggleVisibility();
 
     try {
-      const newBlogPost = await blogServices.create(newBlog);
+      const newBlogPost = await blogServices.create(blogObject);
       setBlogs(blogs.concat(newBlogPost));
       setNotificationValues(notificationMessage);
       setNotifications(
-        `a new blog ${newBlog.title} by ${newBlog.author} added`
+        `a new blog ${blogObject.title} by ${blogObject.author} added`
       );
-      setBlogValues({
-        title: "",
-        author: "",
-        url: "",
-      });
       setTimeout(() => {
         setNotificationValues(null);
         setNotifications(null);
@@ -144,8 +116,36 @@ function App() {
       setTimeout(() => {
         setNotificationValues(null);
         setNotifications(null);
-      }, 5000); 
+      }, 5000);
     }
+  };
+
+  const handleLikeBlog = async (id, blogObject) => {
+    const updatedBlogLikes = await blogServices.update(id, blogObject);
+    setBlogs(
+      blogs
+        .map((b) => (b.id !== id ? b : updatedBlogLikes))
+        .sort((a, b) => sortBlogsByLikes(a, b))
+    );
+    setNotificationValues(notificationMessage);
+    setNotifications(`Blog ${updatedBlogLikes.title} liked`);
+    setTimeout(() => {
+      setNotificationValues(null);
+      setNotifications(null);
+    }, 5000);
+  };
+
+  const handleDeleteBlog = async (id) => {
+    const deletedBlog = blogs.find((b) => b.id === id);
+    setNotificationValues(notificationMessage);
+    setNotifications(`Blog ${deletedBlog.title} deleted`);
+    setTimeout(() => {
+      setNotificationValues(null);
+      setNotifications(null);
+    }, 5000);
+
+    await blogServices.remove(id);
+    setBlogs(blogs.filter((b) => b.id !== id));
   };
 
   const logoutStyles = {
@@ -158,11 +158,7 @@ function App() {
         <>
           <h1>log in to application</h1>
           <div style={notificationValues}>{notifications}</div>
-          <Login
-            handleLogin={handleLogin}
-            loginValues={loginValues}
-            handleLoginValues={handleLoginValues}
-          />
+          <Login handleLogin={handleLogin} />
         </>
       ) : (
         <>
@@ -172,12 +168,18 @@ function App() {
           <button style={logoutStyles} onClick={() => handleLogout()}>
             Logout
           </button>
-          <BlogForm
-            handleAddBlog={handleAddBlog}
-            blogValues={blogValues}
-            handleBlogValues={handleBlogValues}
+          <Toggable
+            buttonLabel="create new blog"
+            closeButtonLabel="cancel"
+            ref={blogFormRef}
+          >
+            <BlogForm handleAddBlog={handleAddBlog} />
+          </Toggable>
+          <Blogs
+            blogs={blogs}
+            handleLikeBlog={handleLikeBlog}
+            handleDeleteBlog={handleDeleteBlog}
           />
-          <Blogs setNotifications={setNotifications} blogs={blogs} />
         </>
       )}
     </div>

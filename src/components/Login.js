@@ -1,11 +1,35 @@
-const Login = ({ handleLogin, loginValues, handleLoginValues }) => {
+import { useState } from "react";
+
+const Login = ({ handleLogin }) => {
+  const [loginValues, setLoginValues] = useState({
+    username: "",
+    password: "",
+  });
+
+  const handleLoginValues = (event) => {
+    setLoginValues({
+      ...loginValues,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const submitLogin = (event) => {
+    event.preventDefault();
+
+    handleLogin(loginValues);
+    setLoginValues({
+      username: "",
+      password: "",
+    });
+  };
+
   const loginStyles = {
     margin: "10px 0",
   };
 
   return (
     <div style={loginStyles}>
-      <form onSubmit={handleLogin}>
+      <form onSubmit={submitLogin}>
         <div>
           <div>
             <label>username </label>
