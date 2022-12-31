@@ -1,6 +1,6 @@
 import { useState, forwardRef, useImperativeHandle } from "react";
 
-const Toggable = forwardRef(
+const Togglable = forwardRef(
   ({ buttonLabel, closeButtonLabel, children }, refs) => {
     const [visible, setVisible] = useState(false);
 
@@ -20,12 +20,12 @@ const Toggable = forwardRef(
       return { toggleVisibility };
     });
 
-    const toggableStyles = {
+    const togglableStyles = {
       margin: "10px 0",
     };
 
     return (
-      <div style={toggableStyles}>
+      <div style={togglableStyles}>
         <div style={hideWhenVisible}>
           <button onClick={toggleVisibility}>{buttonLabel}</button>
         </div>
@@ -38,6 +38,6 @@ const Toggable = forwardRef(
   }
 );
 
-Toggable.displayName = "Toggable";
+Togglable.displayName = "Togglable";
 
-export default Toggable;
+export default Togglable;

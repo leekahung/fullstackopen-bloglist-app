@@ -1,6 +1,6 @@
 import { useState, forwardRef, useImperativeHandle } from "react";
 
-const ToggableBlog = forwardRef(
+const TogglableBlog = forwardRef(
   ({ buttonLabel, closeButtonLabel, children }, refs) => {
     const [visible, setVisible] = useState(false);
 
@@ -27,6 +27,6 @@ const ToggableBlog = forwardRef(
   }
 );
 
-ToggableBlog.displayName = "ToggableBlog";
+TogglableBlog.displayName = "TogglableBlog";
 
-export default ToggableBlog;
+export default TogglableBlog;

@@ -1,4 +1,4 @@
-import ToggableBlog from "./ToggableBlog";
+import TogglableBlog from "./TogglableBlog";
 
 const Blog = ({ blog, handleLikeBlog, handleDeleteBlog }) => {
   const runLikeBlog = async (event) => {
@@ -25,7 +25,7 @@ const Blog = ({ blog, handleLikeBlog, handleDeleteBlog }) => {
   return (
     <div style={blogStyles}>
       {blog.title} {blog.author}{" "}
-      <ToggableBlog buttonLabel="view" closeButtonLabel="hide">
+      <TogglableBlog buttonLabel="view" closeButtonLabel="hide">
         <div>
           {blog.url}
           <br />
@@ -35,7 +35,7 @@ const Blog = ({ blog, handleLikeBlog, handleDeleteBlog }) => {
           <br />
           <button onClick={runDeleteBlog}>remove</button>
         </div>
-      </ToggableBlog>
+      </TogglableBlog>
     </div>
   );
 };

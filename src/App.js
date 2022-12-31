@@ -4,7 +4,7 @@ import blogServices from "./services/blogs";
 import Login from "./components/Login";
 import Blogs from "./components/Blogs";
 import BlogForm from "./components/BlogForm";
-import Toggable from "./components/Toggable";
+import Togglable from "./components/Togglable";
 
 function App() {
   const [blogs, setBlogs] = useState([]);
@@ -168,13 +168,13 @@ function App() {
           <button style={logoutStyles} onClick={() => handleLogout()}>
             Logout
           </button>
-          <Toggable
+          <Togglable
             buttonLabel="create new blog"
             closeButtonLabel="cancel"
             ref={blogFormRef}
           >
             <BlogForm handleAddBlog={handleAddBlog} />
-          </Toggable>
+          </Togglable>
           <Blogs
             blogs={blogs}
             handleLikeBlog={handleLikeBlog}
