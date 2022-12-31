@@ -44,6 +44,7 @@ const BlogForm = ({ handleAddBlog }) => {
             name="title"
             value={blogValues.title}
             onChange={handleBlogValues}
+            placeholder="New blog title"
           />
         </div>
         <div>
@@ -52,6 +53,7 @@ const BlogForm = ({ handleAddBlog }) => {
             name="author"
             value={blogValues.author}
             onChange={handleBlogValues}
+            placeholder="New blog author"
           />
         </div>
         <div>
@@ -60,6 +62,7 @@ const BlogForm = ({ handleAddBlog }) => {
             name="url"
             value={blogValues.url}
             onChange={handleBlogValues}
+            placeholder="New blog url"
           />
         </div>
         <button style={cancelButtonStyles}>create</button>
