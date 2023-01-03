@@ -10,7 +10,7 @@ function App() {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
   const [notifications, setNotifications] = useState("");
-  const [notificationValues, setNotificationValues] = useState(null);
+  const [notificationType, setNotificationType] = useState(null);
   const blogFormRef = useRef();
 
   const sortBlogsByLikes = (blog1, blog2) => {
@@ -61,6 +61,14 @@ function App() {
     ...notificationStyles.error,
   };
 
+  const notificationTimeout = (time, auxFunc = function () {}) => {
+    setTimeout(() => {
+      setNotificationType(null);
+      setNotifications(null);
+      auxFunc();
+    }, time);
+  };
+
   const handleLogin = async (loginCredentials) => {
     try {
       const user = await loginService.login(loginCredentials);
@@ -68,31 +76,26 @@ function App() {
 
       blogServices.setToken(user.token);
       setUser(user);
-      setNotificationValues(notificationMessage);
+      setNotificationType(notificationMessage);
       setNotifications(`${user.name} logged in`);
-      setTimeout(() => {
-        setNotificationValues(null);
-        setNotifications(null);
-      }, 5000);
+      notificationTimeout(5000);
     } catch (exception) {
-      setNotificationValues(notificationError);
+      setNotificationType(notificationError);
       setNotifications("Wrong username or password");
-      setTimeout(() => {
-        setNotificationValues(null);
-        setNotifications(null);
-      }, 5000);
+      notificationTimeout(5000);
     }
   };
 
   const handleLogout = () => {
     const name = JSON.parse(window.localStorage.loggedUser).name;
-    setNotificationValues(notificationMessage);
+    setNotificationType(notificationMessage);
     setNotifications(`${name} logging out...`);
     setTimeout(() => {
-      setNotificationValues(null);
+      setNotificationType(null);
       setNotifications(null);
       window.location.reload();
     }, 2000);
+    notificationTimeout(2000, window.location.reload());
     window.localStorage.removeItem("loggedUser");
   };
 
@@ -102,21 +105,16 @@ function App() {
     try {
       const newBlogPost = await blogServices.create(blogObject);
       setBlogs(blogs.concat(newBlogPost));
-      setNotificationValues(notificationMessage);
+      setNotificationType(notificationMessage);
       setNotifications(
         `a new blog ${blogObject.title} by ${blogObject.author} added`
       );
-      setTimeout(() => {
-        setNotificationValues(null);
-        setNotifications(null);
-      }, 5000);
+      console.log(newBlogPost);
+      notificationTimeout(5000);
     } catch (exception) {
-      setNotificationValues(notificationError);
+      setNotificationType(notificationError);
       setNotifications("All fields must to be filled");
-      setTimeout(() => {
-        setNotificationValues(null);
-        setNotifications(null);
-      }, 5000);
+      notificationTimeout(5000);
     }
   };
 
@@ -127,22 +125,16 @@ function App() {
         .map((b) => (b.id !== id ? b : updatedBlogLikes))
         .sort((a, b) => sortBlogsByLikes(a, b))
     );
-    setNotificationValues(notificationMessage);
+    setNotificationType(notificationMessage);
     setNotifications(`Blog ${updatedBlogLikes.title} liked`);
-    setTimeout(() => {
-      setNotificationValues(null);
-      setNotifications(null);
-    }, 5000);
+    notificationTimeout(5000);
   };
 
   const handleDeleteBlog = async (id) => {
     const deletedBlog = blogs.find((b) => b.id === id);
-    setNotificationValues(notificationMessage);
+    setNotificationType(notificationMessage);
     setNotifications(`Blog ${deletedBlog.title} deleted`);
-    setTimeout(() => {
-      setNotificationValues(null);
-      setNotifications(null);
-    }, 5000);
+    notificationTimeout(5000);
 
     await blogServices.remove(id);
     setBlogs(blogs.filter((b) => b.id !== id));
@@ -157,13 +149,13 @@ function App() {
       {user === null ? (
         <>
           <h1>log in to application</h1>
-          <div style={notificationValues}>{notifications}</div>
+          <div style={notificationType}>{notifications}</div>
           <Login handleLogin={handleLogin} />
         </>
       ) : (
         <>
           <h1>blogs</h1>
-          <div style={notificationValues}>{notifications}</div>
+          <div style={notificationType}>{notifications}</div>
           <div>{`user: ${user.name}`}</div>
           <button style={logoutStyles} onClick={() => handleLogout()}>
             Logout
