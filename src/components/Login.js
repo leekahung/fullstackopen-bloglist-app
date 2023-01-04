@@ -35,6 +35,7 @@ const Login = ({ handleLogin }) => {
           <div>
             <label>username </label>
             <input
+              className="username"
               name="username"
               value={loginValues.username}
               onChange={handleLoginValues}
@@ -43,13 +44,16 @@ const Login = ({ handleLogin }) => {
           <div>
             <label>password </label>
             <input
+              className="password"
               type="password"
               name="password"
               value={loginValues.password}
               onChange={handleLoginValues}
             />
           </div>
-          <button style={loginStyles}>login</button>
+          <button className="login-button" style={loginStyles}>
+            login
+          </button>
         </div>
       </form>
     </div>

@@ -20,30 +20,46 @@ blogsRouter.post("/", userExtractor, async (request, response) => {
   const savedBlog = await blog.save();
   user.blogs = user.blogs.concat(savedBlog._id);
   await user.save();
-  
-  response.status(201).json(savedBlog);
+
+  const returnedSavedBlog = await Blog.findById(savedBlog._id).populate(
+    "user",
+    { name: 1 }
+  );
+  response.status(201).json(returnedSavedBlog);
 });
 
 blogsRouter.put("/:id", async (request, response) => {
-  const { user, ...bodyToUpdate } = request.body;
+  const body = request.body;
 
-  const updateBlogLikes = await Blog.findByIdAndUpdate(
+  await Blog.findByIdAndUpdate(
     request.params.id,
-    bodyToUpdate,
+    { likes: body.likes },
     { new: true }
   );
-  response.json(updateBlogLikes);
+
+  const updatedBlogLikes = await Blog.findById(request.params.id).populate(
+    "user",
+    { name: 1 }
+  );
+  response.json(updatedBlogLikes);
 });
 
 blogsRouter.delete("/:id", userExtractor, async (request, response) => {
   const user = request.user;
-  await Blog.findByIdAndDelete(request.params.id);
-  user.blogs = user.blogs.filter(
-    (blogId) => blogId.toString() !== request.params.id
-  );
-  await user.save();
+  const blogToDelete = await Blog.findById(request.params.id);
+  if (user._id.toString() === blogToDelete.user[0].toString()) {
+    await Blog.findByIdAndDelete(request.params.id);
+    user.blogs = user.blogs.filter(
+      (blogId) => blogId.toString() !== request.params.id
+    );
+    await user.save();
 
-  response.status(204).end();
+    response.status(204).end();
+  } else {
+    response
+      .status(401)
+      .json({ error: "only original poster can delete blog post" });
+  }
 });
 
 module.exports = blogsRouter;

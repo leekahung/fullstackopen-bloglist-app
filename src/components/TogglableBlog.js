@@ -18,7 +18,7 @@ const TogglableBlog = forwardRef(
 
     return (
       <>
-        <button onClick={toggleVisibility}>
+        <button className="view-blog" onClick={toggleVisibility}>
           {visible ? closeButtonLabel : buttonLabel}
         </button>
         <div style={showWhenVisible}>{children}</div>

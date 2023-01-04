@@ -23,8 +23,10 @@ const Blog = ({ blog, handleLikeBlog, handleDeleteBlog }) => {
   };
 
   return (
-    <div style={blogStyles}>
-      {blog.title} {blog.author}{" "}
+    <li style={blogStyles}>
+      <span>
+        {blog.title} {blog.author}
+      </span>{" "}
       <TogglableBlog buttonLabel="view" closeButtonLabel="hide">
         <div className="blog-info">
           {blog.url}
@@ -34,14 +36,14 @@ const Blog = ({ blog, handleLikeBlog, handleDeleteBlog }) => {
             like
           </button>
           <br />
-          {blog.user[0].name
-            ? blog.user[0].name
-            : JSON.parse(window.localStorage.getItem("loggedUser")).name}
+          {blog.user[0].name}
           <br />
-          <button onClick={runDeleteBlog}>remove</button>
+          <button className="remove-blog" onClick={runDeleteBlog}>
+            remove
+          </button>
         </div>
       </TogglableBlog>
-    </div>
+    </li>
   );
 };
 

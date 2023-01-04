@@ -25,6 +25,8 @@ function App() {
     }
   }, [user]);
 
+  console.log(blogs);
+
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedUser");
     if (loggedUserJSON) {
@@ -90,11 +92,6 @@ function App() {
     const name = JSON.parse(window.localStorage.loggedUser).name;
     setNotificationType(notificationMessage);
     setNotifications(`${name} logging out...`);
-    setTimeout(() => {
-      setNotificationType(null);
-      setNotifications(null);
-      window.location.reload();
-    }, 2000);
     notificationTimeout(2000, window.location.reload());
     window.localStorage.removeItem("loggedUser");
   };
@@ -109,7 +106,6 @@ function App() {
       setNotifications(
         `a new blog ${blogObject.title} by ${blogObject.author} added`
       );
-      console.log(newBlogPost);
       notificationTimeout(5000);
     } catch (exception) {
       setNotificationType(notificationError);
@@ -131,17 +127,29 @@ function App() {
   };
 
   const handleDeleteBlog = async (id) => {
-    const deletedBlog = blogs.find((b) => b.id === id);
-    setNotificationType(notificationMessage);
-    setNotifications(`Blog ${deletedBlog.title} deleted`);
-    notificationTimeout(5000);
+    try {
+      const deletedBlog = blogs.find((b) => b.id === id);
+      await blogServices.remove(id);
 
-    await blogServices.remove(id);
-    setBlogs(blogs.filter((b) => b.id !== id));
+      setNotificationType(notificationMessage);
+      setNotifications(`Blog ${deletedBlog.title} deleted`);
+      notificationTimeout(5000);
+      setBlogs(blogs.filter((b) => b.id !== id));
+    } catch (exception) {
+      setNotificationType(notificationError);
+      setNotifications("Only original poster can delete this blog post");
+      notificationTimeout(5000);
+    }
   };
 
   const logoutStyles = {
     margin: "10px 0",
+  };
+
+  const blogListStyles = {
+    listStyle: "none",
+    listStylePosition: "inside",
+    paddingLeft: "0",
   };
 
   return (
@@ -167,11 +175,13 @@ function App() {
           >
             <BlogForm handleAddBlog={handleAddBlog} />
           </Togglable>
-          <Blogs
-            blogs={blogs}
-            handleLikeBlog={handleLikeBlog}
-            handleDeleteBlog={handleDeleteBlog}
-          />
+          <ul className="blog-list" style={blogListStyles}>
+            <Blogs
+              blogs={blogs}
+              handleLikeBlog={handleLikeBlog}
+              handleDeleteBlog={handleDeleteBlog}
+            />
+          </ul>
         </>
       )}
     </div>

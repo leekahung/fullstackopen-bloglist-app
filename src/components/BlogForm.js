@@ -41,6 +41,7 @@ const BlogForm = ({ handleAddBlog }) => {
         <div>
           <label>title: </label>
           <input
+            className="blog-title"
             name="title"
             value={blogValues.title}
             onChange={handleBlogValues}
@@ -50,6 +51,7 @@ const BlogForm = ({ handleAddBlog }) => {
         <div>
           <label>author: </label>
           <input
+            className="blog-author"
             name="author"
             value={blogValues.author}
             onChange={handleBlogValues}
@@ -59,13 +61,16 @@ const BlogForm = ({ handleAddBlog }) => {
         <div>
           <label>url: </label>
           <input
+            className="blog-url"
             name="url"
             value={blogValues.url}
             onChange={handleBlogValues}
             placeholder="New blog url"
           />
         </div>
-        <button style={cancelButtonStyles}>create</button>
+        <button className="create-blog" style={cancelButtonStyles}>
+          create
+        </button>
       </form>
     </div>
   );
