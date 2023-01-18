@@ -1,43 +1,58 @@
 import { useState, forwardRef, useImperativeHandle } from "react";
+import PropTypes from "prop-types";
 
 const Togglable = forwardRef(
-  ({ buttonLabel, closeButtonLabel, children }, refs) => {
+  (
+    { buttonLabel, closeLabel = "cancel", buttonLocation = "bottom", children },
+    refs
+  ) => {
     const [visible, setVisible] = useState(false);
 
-    const hideWhenVisible = {
-      display: visible ? "none" : "",
-    };
-
-    const showWhenVisible = {
-      display: visible ? "" : "none",
-    };
+    const showWhenVisible = { display: visible ? "" : "none" };
+    const hideWhenVisible = { display: visible ? "none" : "" };
 
     const toggleVisibility = () => {
       setVisible(!visible);
     };
 
     useImperativeHandle(refs, () => {
-      return { toggleVisibility };
+      return {
+        toggleVisibility,
+      };
     });
 
-    const togglableStyles = {
-      margin: "10px 0",
-    };
-
-    return (
-      <div style={togglableStyles}>
-        <div style={hideWhenVisible}>
-          <button onClick={toggleVisibility}>{buttonLabel}</button>
-        </div>
+    return buttonLocation === "bottom" ? (
+      <>
+        <button
+          className="toggler"
+          style={hideWhenVisible}
+          onClick={toggleVisibility}
+        >
+          {buttonLabel}
+        </button>
         <div style={showWhenVisible}>
           {children}
-          <button onClick={toggleVisibility}>{closeButtonLabel}</button>
+          <button onClick={toggleVisibility}>{closeLabel}</button>
         </div>
-      </div>
+      </>
+    ) : (
+      <>
+        <button className="toggler" onClick={toggleVisibility}>
+          {visible ? closeLabel : buttonLabel}
+        </button>
+        <div style={showWhenVisible}>{children}</div>
+      </>
     );
   }
 );
 
 Togglable.displayName = "Togglable";
+
+Togglable.propTypes = {
+  buttonLabel: PropTypes.string.isRequired,
+  closeLabel: PropTypes.string,
+  buttonLocation: PropTypes.string,
+  children: PropTypes.node.isRequired,
+};
 
 export default Togglable;

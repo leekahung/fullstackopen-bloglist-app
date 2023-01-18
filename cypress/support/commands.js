@@ -8,7 +8,7 @@ Cypress.Commands.add("login", ({ username, password }) => {
   });
 });
 
-Cypress.Commands.add("addBlog", ({ title, author, url, likes = 0 }) => {
+Cypress.Commands.add("createBlog", ({ title, author, url, likes }) => {
   cy.request({
     url: "http://localhost:8888/api/blogs",
     method: "POST",

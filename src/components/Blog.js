@@ -1,50 +1,45 @@
-import TogglableBlog from "./TogglableBlog";
+import Togglable from "./Togglable";
+import PropTypes from "prop-types";
 
 const Blog = ({ blog, handleLikeBlog, handleDeleteBlog }) => {
-  const runLikeBlog = async (event) => {
-    event.preventDefault();
-    const likeBlog = {
-      ...blog,
-      likes: blog.likes + 1,
-    };
-
-    handleLikeBlog(blog.id, likeBlog);
-  };
-
-  const runDeleteBlog = async (event) => {
-    event.preventDefault();
-    handleDeleteBlog(blog.id);
-  };
-
-  const blogStyles = {
+  const style = {
+    padding: "5px",
     marginBottom: "5px",
     border: "1px solid",
-    padding: "10px",
+  };
+
+  const handleClickLike = (blog) => {
+    handleLikeBlog(blog);
+  };
+
+  const handleClickDelete = (blog) => {
+    handleDeleteBlog(blog);
   };
 
   return (
-    <li style={blogStyles}>
-      <span>
-        {blog.title} {blog.author}
-      </span>{" "}
-      <TogglableBlog buttonLabel="view" closeButtonLabel="hide">
-        <div className="blog-info">
-          {blog.url}
-          <br />
+    <li className="blog-info" style={style}>
+      {blog.title} {blog.author}{" "}
+      <Togglable buttonLabel="view" closeLabel="hide" buttonLocation="same">
+        <div className="blog-url">{blog.url}</div>
+        <div className="blog-likes">
           likes {blog.likes}{" "}
-          <button onClick={runLikeBlog} className="likeBtn">
+          <button className="like-btn" onClick={() => handleClickLike(blog)}>
             like
           </button>
-          <br />
-          {blog.user[0].name}
-          <br />
-          <button className="remove-blog" onClick={runDeleteBlog}>
-            remove
-          </button>
         </div>
-      </TogglableBlog>
+        <div>{blog.user.name}</div>
+        <button className="delete-btn" onClick={() => handleClickDelete(blog)}>
+          delete
+        </button>
+      </Togglable>
     </li>
   );
+};
+
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  handleLikeBlog: PropTypes.func,
+  handleDeleteBlog: PropTypes.func,
 };
 
 export default Blog;
