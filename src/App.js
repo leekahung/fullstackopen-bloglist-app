@@ -88,6 +88,9 @@ const App = () => {
             handleLogin={handleLogin}
             handleLoginValues={handleLoginValues}
           />
+          <div>
+            Try logging in using bobIsCool as username and cool as password!
+          </div>
         </>
       ) : (
         <>
