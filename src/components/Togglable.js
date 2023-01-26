@@ -1,5 +1,4 @@
 import { useState, forwardRef, useImperativeHandle } from "react";
-import PropTypes from "prop-types";
 
 const Togglable = forwardRef(
   (
@@ -8,8 +7,8 @@ const Togglable = forwardRef(
   ) => {
     const [visible, setVisible] = useState(false);
 
-    const showWhenVisible = { display: visible ? "" : "none" };
-    const hideWhenVisible = { display: visible ? "none" : "" };
+    const hideWhenVisible = { display: visible ? "" : "none" };
+    const showWhenVisible = { display: visible ? "none" : "" };
 
     const toggleVisibility = () => {
       setVisible(!visible);
@@ -23,36 +22,27 @@ const Togglable = forwardRef(
 
     return buttonLocation === "bottom" ? (
       <>
-        <button
-          className="toggler"
-          style={hideWhenVisible}
-          onClick={toggleVisibility}
-        >
-          {buttonLabel}
-        </button>
-        <div style={showWhenVisible}>
+        <div style={{ ...showWhenVisible, padding: "10px 0 0" }}>
+          <button onClick={toggleVisibility}>
+            {visible ? closeLabel : buttonLabel}
+          </button>
+        </div>
+        <div style={hideWhenVisible}>
           {children}
           <button onClick={toggleVisibility}>{closeLabel}</button>
         </div>
       </>
     ) : (
       <>
-        <button className="toggler" onClick={toggleVisibility}>
+        <button onClick={toggleVisibility}>
           {visible ? closeLabel : buttonLabel}
         </button>
-        <div style={showWhenVisible}>{children}</div>
+        <div style={hideWhenVisible}>{children}</div>
       </>
     );
   }
 );
 
 Togglable.displayName = "Togglable";
-
-Togglable.propTypes = {
-  buttonLabel: PropTypes.string.isRequired,
-  closeLabel: PropTypes.string,
-  buttonLocation: PropTypes.string,
-  children: PropTypes.node.isRequired,
-};
 
 export default Togglable;

@@ -1,0 +1,18 @@
+{
+  "blogs": [],
+  "users": [
+    {
+      "username": "aceui",
+      "name": "Alice Ceui",
+      "passwordHash": "test1specialHash",
+      "id": 1
+    },
+    {
+      "username": "bobIsCool",
+      "name": "Bobby Lee",
+      "passwordHash": "test2specialHash",
+      "id": 2
+    }
+  ],
+  "loggeduser": []
+}

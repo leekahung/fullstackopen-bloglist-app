@@ -1,109 +1,85 @@
-import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 import Login from "./components/Login";
+import Blogs from "./components/Blogs/Blogs";
+import BlogInfo from "./components/Blogs/BlogInfo";
+import Users from "./components/Users/Users";
+import User from "./components/Users/User";
 import Notifications from "./components/Notifications";
-import Blogs from "./components/Blogs";
-import loginService from "./services/login";
-import blogService from "./services/blogs";
+import { initializeUsers } from "./reducers/userReducer";
+import { initializeBlogs } from "./reducers/blogReducer";
+import { initializeLoggedUser, logout } from "./reducers/loggeduserReducer";
+import { Routes, Route, useMatch, Link, useLocation } from "react-router-dom";
 
 const App = () => {
-  const initialLoginValues = {
-    username: "",
-    password: "",
-  };
+  const dispatch = useDispatch();
+  const users = useSelector((state) => state.users);
+  const blogs = useSelector((state) => state.blogs);
+  const loggedUser = useSelector((state) => state.loggedUser);
 
-  const initialNotification = {
-    message: "",
-    type: "",
-  };
-
-  const [loginValues, setLoginValues] = useState(initialLoginValues);
-  const [user, setUser] = useState(null);
-  const [userStatus, setUserStatus] = useState("");
-  const [notifications, setNotifications] = useState(initialNotification);
-  const [timeoutID, setTimeoutID] = useState(null);
+  const location = useLocation();
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem("loggedUser");
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      setUser(user);
-      setUserStatus(`${user.name} logged in`);
-      blogService.setToken(user.token);
-    }
-  }, []);
+    dispatch(initializeUsers());
+    dispatch(initializeBlogs());
+    dispatch(initializeLoggedUser());
+  }, [dispatch, location.key]);
 
-  const handleLoginValues = (event) => {
-    setLoginValues({
-      ...loginValues,
-      [event.target.name]: event.target.value,
-    });
+  const matchUser = useMatch("/users/:id");
+  const user = matchUser
+    ? users.find((u) => u.id === matchUser.params.id)
+    : null;
+
+  const matchBlog = useMatch("/blogs/:id");
+  const blog = matchBlog
+    ? blogs.find((u) => u.id === matchBlog.params.id)
+    : null;
+
+  const style = {
+    margin: "0 5px",
   };
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
-    try {
-      const user = await loginService.loginUser(loginValues);
-
-      window.localStorage.setItem("loggedUser", JSON.stringify(user));
-
-      blogService.setToken(user.token);
-      setUser(user);
-      setLoginValues(initialLoginValues);
-      setUserStatus(`${user.name} logged in`);
-    } catch (exception) {
-      runNotifications("Invalid username or password", 5000, "error");
-    }
+  const styleNavbar = {
+    marginBottom: "20px",
+    backgroundColor: "lightgrey",
+    padding: "5px",
   };
 
-  const handleLogout = async () => {
-    window.localStorage.removeItem("loggedUser");
-    setUser(null);
-    setUserStatus("");
-  };
-
-  const runNotifications = (message, time, type = "") => {
-    if (timeoutID) {
-      clearTimeout(timeoutID);
-      setNotifications({ message, type });
-    }
-    const timeout = setTimeout(
-      () => setNotifications(initialNotification),
-      time
-    );
-    setNotifications({ message, type });
-    setTimeoutID(timeout);
+  const handleLogout = (user) => {
+    dispatch(logout(user));
   };
 
   return (
-    <div className="App">
-      {!user ? (
-        <>
-          <h1>log in to application</h1>
-          <Notifications
-            notifications={notifications}
-            userStatus={userStatus}
-          />
-          <Login
-            loginValues={loginValues}
-            handleLogin={handleLogin}
-            handleLoginValues={handleLoginValues}
-          />
-          <div>
-            Try logging in using bobIsCool as username and cool as password!
-          </div>
-        </>
-      ) : (
-        <>
-          <h1>blogs</h1>
-          <Notifications
-            notifications={notifications}
-            userStatus={userStatus}
-            handleLogout={handleLogout}
-          />
-          <Blogs user={user} runNotifications={runNotifications} />
-        </>
-      )}
-    </div>
+    <>
+      <div className="App">
+        <div style={styleNavbar}>
+          <Link style={style} to="/">
+            blogs
+          </Link>
+          <Link style={style} to="/users">
+            users
+          </Link>
+          {loggedUser.token ? (
+            <span style={style}>
+              {loggedUser.name} logged in{" "}
+              <button style={style} onClick={() => handleLogout(loggedUser)}>
+                logout
+              </button>
+            </span>
+          ) : null}
+        </div>
+        <Login />
+        <h1>blogs</h1>
+        <Notifications />
+      </div>
+
+      <Routes>
+        <Route path="/" element={<Blogs />} />
+        <Route path="/blogs/:id" element={<BlogInfo blog={blog} />} />
+        <Route path="/users" element={<Users />} />
+        <Route path="/users/:id" element={<User user={user} />} />
+      </Routes>
+    </>
   );
 };
 

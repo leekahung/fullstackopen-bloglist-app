@@ -1,6 +1,6 @@
 const morgan = require("morgan");
 const jwt = require("jsonwebtoken");
-const config = require("./config");
+const config = require("../utils/config");
 const User = require("../models/user");
 
 morgan.token("body", (request) => JSON.stringify(request.body));
@@ -13,22 +13,25 @@ const middlewareLogger = morgan(`
 const errorHandler = (error, _request, response, next) => {
   console.log(error.message);
 
-  if (error.name === "CastError") {
-    return response.status(400).json({
-      error: "Malformatted id",
-    });
-  } else if (error.name === "ValidationError") {
-    return response.status(400).json({
-      error: error.message,
-    });
-  } else if (error.name === "JsonWebTokenError") {
-    return response.status(401).json({
-      error: "Token missing or invalid",
-    });
-  } else if (error.name === "TokenExpiredError") {
-    return response.status(401).json({
-      error: "Token expired",
-    });
+  switch (error.name) {
+    case "CastError":
+      return response.status(400).json({
+        error: "CastError: Invalid id",
+      });
+    case "ValidationError":
+      return response.status(400).json({
+        error: error.message,
+      });
+    case "JsonWebTokenError":
+      return response.status(401).json({
+        error: "JsonWebTokenError: Invalid token or missing",
+      });
+    case "TokenExpiredError":
+      return response.status(401).send({
+        error: "TokenExpiredError: Expired token",
+      });
+    default:
+      break;
   }
 
   next(error);
@@ -47,7 +50,7 @@ const userExtractor = async (request, response, next) => {
   const decodedToken = jwt.verify(request.token, config.SECRET);
   if (!decodedToken.id) {
     return response.status(401).json({
-      error: "Token missing or invalid",
+      error: "Token invalid or missing",
     });
   }
   request["user"] = await User.findById(decodedToken.id);

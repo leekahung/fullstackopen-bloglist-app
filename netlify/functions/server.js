@@ -3,24 +3,23 @@ require("express-async-errors");
 const cors = require("cors");
 const app = express();
 
-app.use(cors());
 app.use(express.json());
+app.use(cors());
 
-const config = require("./utils/config");
 const mongoose = require("mongoose");
+const {
+  errorHandler,
+  middlewareLogger,
+  tokenExtractor,
+} = require("./utils/middleware");
 const blogRouter = require("./controllers/blogs");
 const userRouter = require("./controllers/users");
 const loginRouter = require("./controllers/login");
-const {
-  middlewareLogger,
-  errorHandler,
-  tokenExtractor,
-} = require("./utils/middleware");
+const config = require("./utils/config");
 
-const mongoUrl = config.MONGODB_URI;
-mongoose.connect(mongoUrl).then((response) => {
+mongoose.connect(config.MONGODB_URI).then((response) => {
   if (response) {
-    console.log("Connected to MongoDB database");
+    console.log("Connected to MongoDB");
   } else {
     console.log("Failed to connect to MongoDB");
   }
@@ -32,11 +31,6 @@ app.use(tokenExtractor);
 app.use("/api/login", loginRouter);
 app.use("/api/users", userRouter);
 app.use("/api/blogs", blogRouter);
-
-if (process.env.NODE_ENV === "test") {
-  const testingRouter = require("./controllers/testing");
-  app.use("/api/testing", testingRouter);
-}
 
 app.use(errorHandler);
 

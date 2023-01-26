@@ -1,39 +1,49 @@
-import PropTypes from "prop-types";
+import { useDispatch, useSelector } from "react-redux";
+import { useField } from "../hooks";
+import { login } from "../reducers/loggeduserReducer";
 
-const Login = ({ loginValues, handleLogin, handleLoginValues }) => {
-  const buttonStyle = {
+const Login = () => {
+  const dispatch = useDispatch();
+  const loggedUser = useSelector((state) => state.loggedUser);
+  const { clearValue: clearUsername, ...username } = useField("text");
+  const { clearValue: clearPassword, ...password } = useField("text");
+
+  const handleLogin = (event) => {
+    event.preventDefault();
+    dispatch(
+      login({
+        username: username.value,
+        password: password.value,
+      })
+    );
+    clearUsername();
+    clearPassword();
+  };
+
+  const style = {
     margin: "10px 0",
   };
 
   return (
-    <form onSubmit={handleLogin}>
-      <div>
-        <label>username </label>
-        <input
-          name="username"
-          value={loginValues.username}
-          onChange={handleLoginValues}
-        />
-      </div>
-      <div>
-        <label>password </label>
-        <input
-          name="password"
-          value={loginValues.password}
-          onChange={handleLoginValues}
-        />
-      </div>
-      <button id="login-btn" style={buttonStyle}>
-        login
-      </button>
-    </form>
+    <>
+      {!loggedUser.token ? (
+        <>
+          <h2>Login</h2>
+          <form onSubmit={handleLogin}>
+            <div>
+              <label>username: </label>
+              <input {...username} />
+            </div>
+            <div>
+              <label>password: </label>
+              <input {...password} />
+            </div>
+            <button style={style}>login</button>
+          </form>
+        </>
+      ) : null}
+    </>
   );
-};
-
-Login.propTypes = {
-  loginValues: PropTypes.object.isRequired,
-  handleLogin: PropTypes.func.isRequired,
-  handleLoginValues: PropTypes.func.isRequired,
 };
 
 export default Login;

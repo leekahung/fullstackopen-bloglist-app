@@ -3,29 +3,44 @@ const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 
 userRouter.get("/", async (_request, response) => {
-  const users = await User.find({}).populate("blogs", {
+  const allUsers = await User.find({}).populate("blogs", {
     title: 1,
     author: 1,
     url: 1,
     likes: 1,
   });
-  response.json(users);
+  response.json(allUsers);
 });
 
 userRouter.get("/:id", async (request, response) => {
+  let checkUser;
+
+  if (request.query.loginToken) {
+    checkUser = await User.findById(request.params.id);
+
+    if (checkUser.loginToken !== request.query.loginToken) {
+      return response.status(401).json({
+        error: "Mismatched tokens",
+      });
+    }
+
+    return response.status(200).end();
+  }
+
   const user = await User.findById(request.params.id).populate("blogs", {
     title: 1,
     author: 1,
     url: 1,
     likes: 1,
   });
+
   if (user) {
     return response.json(user);
-  } else {
-    return response.status(404).json({
-      error: "User not found or invalid id",
-    });
   }
+
+  response.status(404).json({
+    error: "User not found",
+  });
 });
 
 userRouter.post("/", async (request, response) => {
@@ -50,11 +65,23 @@ userRouter.post("/", async (request, response) => {
   const user = new User({
     username,
     name,
+    loginToken: "",
     passwordHash,
   });
 
   const savedUser = await user.save();
   response.status(201).json(savedUser);
+});
+
+userRouter.put("/:id", async (request, response) => {
+  const user = await User.findByIdAndUpdate(
+    request.params.id,
+    { loginToken: "" },
+    { new: true }
+  );
+
+  await user.save();
+  response.status(202).end();
 });
 
 module.exports = userRouter;

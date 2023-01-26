@@ -4,6 +4,7 @@ const userSchema = new mongoose.Schema({
   username: String,
   name: String,
   passwordHash: String,
+  loginToken: String,
   blogs: [
     {
       type: mongoose.Schema.Types.ObjectId,
@@ -17,9 +18,11 @@ userSchema.set("toJSON", {
     returnedObject.id = returnedObject._id.toString();
     delete returnedObject._id;
     delete returnedObject.__v;
+    delete returnedObject.loginToken;
     delete returnedObject.passwordHash;
   },
 });
 
 const User = mongoose.model("User", userSchema);
+
 module.exports = User;

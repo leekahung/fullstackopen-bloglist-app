@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseUrl = "/api/blogs";
+const baseUrl = "http://localhost:8888/api/blogs";
 
 let token = null;
 
@@ -13,18 +13,31 @@ const getAll = async () => {
   return response.data;
 };
 
-const createNew = async (blogObject) => {
+const createNew = async (newObject) => {
   const config = {
     headers: { Authorization: token },
   };
 
-  const response = await axios.post(baseUrl, blogObject, config);
+  const response = await axios.post(baseUrl, newObject, config);
   return response.data;
 };
 
-const updateObject = async (blogObject) => {
-  const id = blogObject.id;
-  const response = await axios.put(`${baseUrl}/${id}`, blogObject);
+const createComment = async (id, newComment) => {
+  const response = await axios.post(`${baseUrl}/${id}/comments`, newComment);
+  return response.data;
+};
+
+const updateObject = async (objectToUpdate) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+
+  const id = objectToUpdate.id;
+  const response = await axios.put(
+    `${baseUrl}/${id}`,
+    { likes: objectToUpdate.likes + 1 },
+    config
+  );
   return response.data;
 };
 
@@ -37,6 +50,13 @@ const removeObject = async (id) => {
   return response.data;
 };
 
-const blogService = { getAll, createNew, updateObject, removeObject, setToken };
+const blogService = {
+  getAll,
+  createNew,
+  createComment,
+  updateObject,
+  removeObject,
+  setToken,
+};
 
 export default blogService;
