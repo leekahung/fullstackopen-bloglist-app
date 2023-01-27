@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseUrl = "http://localhost:8888/api/blogs";
+const baseUrl = "/api/blogs";
 
 let token = null;
 
@@ -33,11 +33,7 @@ const updateObject = async (objectToUpdate) => {
   };
 
   const id = objectToUpdate.id;
-  const response = await axios.put(
-    `${baseUrl}/${id}`,
-    { likes: objectToUpdate.likes + 1 },
-    config
-  );
+  const response = await axios.put(`${baseUrl}/${id}`, { likes: objectToUpdate.likes + 1 }, config);
   return response.data;
 };
 
