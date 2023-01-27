@@ -44,25 +44,30 @@ const App = () => {
       <GlobalStyle />
       <div className="App">
         <StyledNavBar>
-          <Link to="/">blogs</Link>
-          <Link to="/users">users</Link>
+          <div className="nav-links">
+            <Link to="/">blogs</Link>
+            <Link to="/users">users</Link>
+          </div>
           {loggedUser.token ? (
             <div className="login-status">
-              {loggedUser.name} logged in <StyledButton onClick={() => handleLogout(loggedUser)}>logout</StyledButton>
+              <div>{loggedUser.name} logged in</div>
+              <div>
+                <StyledButton onClick={() => handleLogout(loggedUser)}>logout</StyledButton>
+              </div>
             </div>
           ) : null}
         </StyledNavBar>
         <Login />
         <Notifications />
-        <h1>Blogs App</h1>
-      </div>
+        <h1 style={{ marginLeft: "20px", marginRight: "20px" }}>Blogs App</h1>
 
-      <Routes>
-        <Route path="/" element={<Blogs />} />
-        <Route path="/blogs/:id" element={<BlogInfo blog={blog} />} />
-        <Route path="/users" element={<Users />} />
-        <Route path="/users/:id" element={<User user={user} />} />
-      </Routes>
+        <Routes>
+          <Route path="/" element={<Blogs />} />
+          <Route path="/blogs/:id" element={<BlogInfo blog={blog} />} />
+          <Route path="/users" element={<Users />} />
+          <Route path="/users/:id" element={<User user={user} />} />
+        </Routes>
+      </div>
     </ThemeProvider>
   );
 };

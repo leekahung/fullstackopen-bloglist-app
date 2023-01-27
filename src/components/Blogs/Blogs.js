@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 import Togglable from "../Togglable";
 import BlogForm from "./BlogForm";
 import { removeBlog } from "../../reducers/blogReducer";
-import { StyledButton } from "../StyledComponents/Button/Button.styles";
-import { StyledBlog } from "../StyledComponents/Blog/Blog.styles";
+import StyledButton from "../StyledComponents/Button/Button";
+import StyledBlog, { StyledBlogs } from "../StyledComponents/Blog/Blog";
 
 const Blog = ({ blog }) => {
   const dispatch = useDispatch();
@@ -34,13 +34,15 @@ const Blogs = () => {
     <>
       {loggedUser.token ? (
         <Togglable buttonLabel="create new blog" ref={blogFormRef}>
-          <h2>create new blog</h2>
+          <h2 style={{ marginLeft: "10px" }}>create new blog</h2>
           <BlogForm blogFormRef={blogFormRef} />
         </Togglable>
       ) : null}
-      {blogs.map((b) => {
-        return <Blog key={b.id} blog={b} />;
-      })}
+      <StyledBlogs>
+        {blogs.map((b) => {
+          return <Blog key={b.id} blog={b} />;
+        })}
+      </StyledBlogs>
     </>
   );
 };

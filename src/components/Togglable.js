@@ -4,8 +4,8 @@ import { StyledButton } from "./StyledComponents/Button/Button.styles";
 const Togglable = forwardRef(({ buttonLabel, closeLabel = "cancel", buttonLocation = "bottom", children }, refs) => {
   const [visible, setVisible] = useState(false);
 
-  const hideWhenVisible = { display: visible ? "" : "none" };
-  const showWhenVisible = { display: visible ? "none" : "" };
+  const hideWhenVisible = { display: visible ? "" : "none", margin: "10px" };
+  const showWhenVisible = { display: visible ? "none" : "", margin: "10px" };
 
   const toggleVisibility = () => {
     setVisible(!visible);

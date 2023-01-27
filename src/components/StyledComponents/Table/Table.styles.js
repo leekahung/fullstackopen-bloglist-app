@@ -14,4 +14,7 @@ export const StyledTable = styled.table`
     padding: 10px;
   }
   margin-bottom: 10px;
+  @media (max-width: 768px) {
+    width: 90%;
+  }
 `;

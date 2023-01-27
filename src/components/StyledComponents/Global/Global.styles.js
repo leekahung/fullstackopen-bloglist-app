@@ -13,6 +13,7 @@ const GlobalStyle = createGlobalStyle`
     background-color: ${(props) => props.theme.dark.primary};
     color: ${(props) => props.theme.dark.text};
     font-family: ${(props) => props.theme.fontFamily};
+    margin: 0;
   }
 
   a {

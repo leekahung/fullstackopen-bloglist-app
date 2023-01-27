@@ -1,3 +1,3 @@
-import { StyledTable } from "./Table.styled";
+import { StyledTable } from "./Table.styles";
 
 export default StyledTable;

@@ -4,7 +4,7 @@ const User = ({ user }) => {
   }
 
   return (
-    <div>
+    <div style={{ margin: "20px", display: "flex", flexDirection: "column", justifyContent: "center" }}>
       <h1>{user.name}</h1>
       <h3>added blogs</h3>
       <ul>

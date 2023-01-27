@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useField } from "../../hooks";
 import { upvoteBlog, commentBlog } from "../../reducers/blogReducer";
-import { StyledBlogInfo } from "../StyledComponents/Blog/Blog.styles";
-import { StyledButton } from "../StyledComponents/Button/Button.styles";
-import { StyledForm } from "../StyledComponents/Form/Form.styles";
+import { StyledBlogInfo } from "../StyledComponents/Blog/Blog";
+import StyledButton from "../StyledComponents/Button/Button";
+import StyledForm from "../StyledComponents/Form/Form";
 
 const Comments = ({ blog }) => {
   const dispatch = useDispatch();
@@ -20,7 +20,7 @@ const Comments = ({ blog }) => {
 
   return (
     <>
-      <h3>comments</h3>
+      <h3 style={{ borderTop: "1px solid rgb(240, 240, 240)", paddingTop: "20px" }}>comments</h3>
       <StyledForm onSubmit={handleAddComment} variant="comments">
         <div>
           <input {...comment} />
@@ -52,7 +52,7 @@ const BlogInfo = ({ blog }) => {
   return (
     <StyledBlogInfo>
       <h2>{blog.title}</h2>
-      <a href="." className="blog-info">
+      <a href={`https://${blog.url}`} className="blog-info" target="_blank" rel="noreferrer">
         {blog.url}
       </a>
       <div className="blog-info">

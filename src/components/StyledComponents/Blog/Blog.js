@@ -1,5 +1,5 @@
-import { StyledBlog, StyledBlogInfo } from "./Blog.styles";
+import { StyledBlog, StyledBlogInfo, StyledBlogs } from "./Blog.styles";
 
 export default StyledBlog;
 
-export { StyledBlogInfo };
+export { StyledBlogInfo, StyledBlogs };

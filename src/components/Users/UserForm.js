@@ -1,8 +1,8 @@
 import { useDispatch } from "react-redux";
 import { useField } from "../../hooks";
 import { createUser } from "../../reducers/userReducer";
-import { StyledButton } from "../StyledComponents/Button/Button.styles";
-import { StyledForm } from "../StyledComponents/Form/Form.styles";
+import StyledButton from "../StyledComponents/Button/Button";
+import StyledForm from "../StyledComponents/Form/Form";
 
 const UserForm = () => {
   const dispatch = useDispatch();
