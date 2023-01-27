@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import StyledTable from "../StyledComponents/Table/Table";
+import StyledTable, { StyledTableContainer } from "../StyledComponents/Table/Table";
 import Togglable from "../Togglable";
 import UserForm from "./UserForm";
 
@@ -33,9 +33,9 @@ const Users = () => {
   return (
     <>
       <h2 style={{ marginLeft: "20px", marginRight: "20px" }}>Users</h2>
-      <div style={{ margin: "10px", display: "flex", justifyContent: "center" }}>
+      <StyledTableContainer>
         <UsersTable />
-      </div>
+      </StyledTableContainer>
       <Togglable buttonLabel="create user">
         <UserForm />
       </Togglable>

@@ -2,6 +2,10 @@ import styled from "styled-components";
 
 export const StyledTable = styled.table`
   width: 400px;
+  @media (max-width: 440px) {
+    width: 100%;
+  }
+
   padding: 10px;
   border: 1px solid white;
   border-collapse: collapse;
@@ -14,7 +18,8 @@ export const StyledTable = styled.table`
     padding: 10px;
   }
   margin-bottom: 10px;
-  @media (max-width: 768px) {
-    width: 90%;
-  }
+`;
+
+export const StyledTableContainer = styled.div`
+  margin: 20px;
 `;
