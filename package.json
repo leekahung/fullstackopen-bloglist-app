@@ -21,7 +21,6 @@
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.7.0",
-    "react-scripts": "5.0.1",
     "redux": "^4.2.0",
     "redux-thunk": "^2.4.2",
     "serverless-http": "^3.1.1",
@@ -29,10 +28,8 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "start": "vite",
+    "build": "vite build",
     "server": "json-server -p3001 --watch db.json",
     "dev": "NODE_ENV=development netlify dev"
   },
@@ -55,7 +52,9 @@
     ]
   },
   "devDependencies": {
+    "@vitejs/plugin-react": "^3.1.0",
     "dotenv": "^16.0.3",
-    "json-server": "^0.17.1"
+    "json-server": "^0.17.1",
+    "vite": "^4.2.1"
   }
 }
