@@ -1,6 +1,6 @@
 [build]
-  command = "pnpm run vite:build"
-  publish = "dist"
+  command = "pnpm build"
+  publish = "build"
   functions = "/netlify/functions/"
 
 [functions]
